@@ -1,0 +1,165 @@
+--truy cap db edudb_v2 voi id postgres
+psql edudb_v2 postgres
+--List of subjects having 5 or more credits
+SELECT credit FROM subject WHERE credit >= 3;
+--
+SELECT student_id, first_name
+FROM student
+WHERE clazz_id IN (SELECT clazz_id FROM clazz WHERE name = 'CNTT1.01-K61');
+--List of students in classes whose name contains "CNTT"
+select * from student,clazz where student.clazz_id=clazz.clazz_id and upper(clazz.name) like '%CNTT%';
+--
+select * from student, subject, enrollment
+where subject.subject_id = enrollment.subject_id
+and student.student_id = enrollment.student_id
+and (subject.name = 'Cơ sở dữ liệu' or subject.name = 'Tin học đại cương');
+--
+(select student.student_id,student.first_name,student.last_name from student, subject, enrollment
+where subject.subject_id = enrollment.subject_id
+and student.student_id = enrollment.student_id
+and subject.name = 'Cơ sở dữ liệu')
+
+	intersect
+	
+(select student.student_id,student.first_name,student.last_name from student, subject, enrollment
+where subject.subject_id = enrollment.subject_id
+and student.student_id = enrollment.student_id
+and subject.name = 'Tin học đại cương');
+--
+select subject_id as id, name from subject
+where not exists (
+	select * from enrollment where subject.subject_id = enrollment.subject_id
+)
+--
+select subject.name, subject.credit from subject,enrollment, student
+where subject.subject_id=enrollment.subject_id
+and enrollment.student_id=student.student_id
+and lower(enrollment.semester)='20171'
+and lower(student.first_name)='ngọc an'
+and lower(student.last_name)='bùi'
+--
+select student.student_id, student.first_name, midterm_score, final_score,
+(midterm_score * (1- percentage_final_exam*1.0/100) + final_score
+*percentage_final_exam/100) as subject_score
+from student, enrollment, subject
+where student.student_id=enrollment.student_id
+and enrollment.subject_id=subject.subject_id
+and enrollment.semester='20172'
+and subject.name='Cơ sở dữ liệu'
+--
+select * from
+(select student.student_id, student.first_name, midterm_score, final_score,
+(midterm_score * (1- percentage_final_exam*1.0/100) + final_score
+*percentage_final_exam/100) as subject_score
+from student, enrollment, subject
+where student.student_id=enrollment.student_id
+and enrollment.subject_id=subject.subject_id
+and enrollment.semester='20171'
+and subject.subject_id='IT1110') as bangdiem
+where midterm_score<3 or final_score<3 or subject_score<4
+--10
+select s.first_name,c.name,t.first_name as monitor_name
+from student s 
+join clazz c on s.clazz_id=c.clazz_id
+join student t on c.monitor_id=t.student_id
+--11
+SELECT student_id, concat(first_name, ' ', last_name),age(dob), date_part('year', current_date) - date_part('year', dob) as age_student
+FROM student
+WHERE date_part('year', age(dob)) >=25;
+--
+select first_name, age(dob) from student
+where extract(month from age(dob))>=25
+--12
+--cach1
+SELECT student_id, concat(first_name, ' ', last_name)
+FROM student
+WHERE date_part('year', dob) = 1999
+	AND date_part('month', dob) = 06;
+--cach2
+SELECT student_id, concat(first_name, ' ', last_name),dob
+FROM student
+WHERE dob BETWEEN '1987-06-01' AND '1987-06-30';
+--
+select * from student
+where extract(month from dob)=1
+and extract(year from dob)=1988
+--13
+SELECT c.*, count(student_id) as ssv
+FROM student s join clazz c using(clazz_id)
+GROUP BY c.clazz_id
+ORDER BY ssv desc;
+--
+select clazz.name,count(student) from clazz,student
+where clazz.clazz_id=student.clazz_id
+group by clazz.name
+--13
+SELECT c.*, count(student_id) as ssv, count(c.clazz_id), count(s.clazz_id)
+FROM student s right join clazz c using(clazz_id)
+GROUP BY c.clazz_id
+ORDER BY ssv desc;
+--14
+SELECT 
+    MIN(midterm_score) AS lowest_score,
+    MAX(midterm_score) AS highest_score,
+    AVG(midterm_score) AS average_score
+FROM 
+    enrollment
+WHERE 
+    subject_id = ( SELECT subject_id FROM subject WHERE name = 'Mạng máy tính')
+    AND semester = '20172';
+--15
+SELECT l.lecturer_id, l.first_name||' '|| l.last_name as lecturer_name, count(subject_id)
+FROM lecturer l left JOIN teaching t using(lecturer_id)
+GROUP BY l.lecturer_id;
+--16
+select subject_id, count(lecturer_id) as sl_gv
+from teaching
+group by subject_id
+having count(*) >= 2;
+--17
+select s.subject_id, count(lecturer_id) as sl_gv
+from teaching t right join subject s using(subject_id)
+group by subject_id
+having count(*) < 2;
+--18
+select s.*,(midterm_score * (1- percentage_final_exam*1.0/100) + final_score
+*percentage_final_exam/100) as subject_score
+from subject sub join enrollment e using (subject_id)
+	join student s using(student_id)
+where e.subject_id = 'IT3080' and semester = '20172'
+	and (midterm_score * (1- percentage_final_exam*1.0/100) + final_score
+*percentage_final_exam/100) = (select MAX(midterm_score * (1- percentage_final_exam*1.0/100) + final_score
+*percentage_final_exam/100) as subject_score
+from subject sub join enrollment e using (subject_id)
+where e.subject_id = 'IT3080' and semester = '20172')
+--cach2
+with tmp as(
+	select s.*,(midterm_score * (1- percentage_final_exam*1.0/100) + final_score
+*percentage_final_exam/100) as subject_score
+from subject sub join enrollment e using (subject_id)
+	join student s using(student_id)
+where e.subject_id = 'IT3080' and semester = '20172')
+select student_id,first_name,subject_score
+from tmp
+where subject_score = (select max(subject_score) from tmp)
+--
+select first_name, subject_max
+from(
+select s.first_name, (midterm_score * (1- percentage_final_exam*1.0/100) + final_score
+*percentage_final_exam/100) as subject_max
+from student s
+join enrollment e on s.student_id= e.student_id
+join subject su on su.subject_id=e.subject_id
+where lower(su.subject_id)='it3080'
+and lower(e.semester)='20172'
+)
+where subject_max=(select max(subject_max) from (
+select s.first_name, (midterm_score * (1- percentage_final_exam*1.0/100) + final_score
+*percentage_final_exam/100) as subject_max
+from student s
+join enrollment e on s.student_id= e.student_id
+join subject su on su.subject_id=e.subject_id
+where lower(su.subject_id)='it3080'
+and lower(e.semester)='20172'
+) )
+

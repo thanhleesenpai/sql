@@ -1,0 +1,555 @@
+Microsoft Windows [Version 10.0.22621.3296]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Legion 5 Pro>cd C:\Program Files\PostgreSQL\16\bin
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\test2_backup_test2.sql test2
+pg_dump: error: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\test2_backup_test2.sql -h localhost -p 5432 test2
+pg_dump: error: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\test2_backup_test2.sql -h localhost -p 5432 minidatabase
+pg_dump: error: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f C:\test2_backup_test2.sql -h localhost -p 5432 minidatabase
+pg_dump: error: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\backup_test2.sql -Fc -h localhost -p 5432 minidatabase
+pg_dump: error: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+        Is the server running on that host and accepting TCP/IP connections?
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\backup_test2.sql -Fc -h localhost -p 5432 minidatabase
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>createdb -U postgres test20
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>pg_restore -d test20 -U postgres D:\backup_minidatabe.sql
+pg_restore: error: could not open input file "D:\backup_minidatabe.sql": No such file or directory
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\backup_test2.sql -Fc -h localhost -p 5432 minidatabase
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>pg_restore -d test20 -U postgres D:\backup_test2.sql
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\backup_minidatabase.custom -Fc -h localhost -p 5432 minidat
+abase
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\backup_minidatabase.sql -h localhost -p 5432 minidatabase
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>pg_restore -d test20 -U postgres D:\backup_minidatabase.custom
+Password:
+
+pg_restore: error: could not execute query: ERROR:  relation "customer" already exists
+Command was: CREATE TABLE public.customer (
+    "ID" character(8) NOT NULL,
+    name character(20),
+    date date
+);
+
+
+pg_restore: error: could not execute query: ERROR:  relation "order" already exists
+Command was: CREATE TABLE public."order" (
+    a "char" NOT NULL,
+    b character varying,
+    c "char"
+);
+
+
+pg_restore: error: could not execute query: ERROR:  relation "product" already exists
+Command was: CREATE TABLE public.product (
+    x "char" NOT NULL,
+    y "char",
+    z "char"
+);
+
+
+pg_restore: error: COPY failed for table "customer": ERROR:  duplicate key value violates unique constraint "customer_pkey"
+DETAIL:  Key ("ID")=(20225764) already exists.
+CONTEXT:  COPY customer, line 1
+pg_restore: error: could not execute query: ERROR:  multiple primary keys for table "customer" are not allowed
+Command was: ALTER TABLE ONLY public.customer
+    ADD CONSTRAINT customer_pkey PRIMARY KEY ("ID");
+
+
+pg_restore: error: could not execute query: ERROR:  multiple primary keys for table "order" are not allowed
+Command was: ALTER TABLE ONLY public."order"
+    ADD CONSTRAINT order_pkey PRIMARY KEY (a);
+
+
+pg_restore: error: could not execute query: ERROR:  multiple primary keys for table "product" are not allowed
+Command was: ALTER TABLE ONLY public.product
+    ADD CONSTRAINT product_pkey PRIMARY KEY (x);
+
+
+pg_restore: warning: errors ignored on restore: 7
+
+C:\Program Files\PostgreSQL\16\bin>pg_restore -d test20 -U postgres D:\backup_minidatabase.sql
+pg_restore: error: input file appears to be a text format dump. Please use psql.
+
+C:\Program Files\PostgreSQL\16\bin>pg_restore -d test20 -U postgres D:\backup_minidatabase.custom
+Password:
+
+pg_restore: error: could not execute query: ERROR:  relation "customer" already exists
+Command was: CREATE TABLE public.customer (
+    "ID" character(8) NOT NULL,
+    name character(20),
+    date date
+);
+
+
+pg_restore: error: could not execute query: ERROR:  relation "order" already exists
+Command was: CREATE TABLE public."order" (
+    a "char" NOT NULL,
+    b character varying,
+    c "char"
+);
+
+
+pg_restore: error: could not execute query: ERROR:  relation "product" already exists
+Command was: CREATE TABLE public.product (
+    x "char" NOT NULL,
+    y "char",
+    z "char"
+);
+
+
+pg_restore: error: COPY failed for table "customer": ERROR:  duplicate key value violates unique constraint "customer_pkey"
+DETAIL:  Key ("ID")=(20225764) already exists.
+CONTEXT:  COPY customer, line 1
+pg_restore: error: could not execute query: ERROR:  multiple primary keys for table "customer" are not allowed
+Command was: ALTER TABLE ONLY public.customer
+    ADD CONSTRAINT customer_pkey PRIMARY KEY ("ID");
+
+
+pg_restore: error: could not execute query: ERROR:  multiple primary keys for table "order" are not allowed
+Command was: ALTER TABLE ONLY public."order"
+    ADD CONSTRAINT order_pkey PRIMARY KEY (a);
+
+
+pg_restore: error: could not execute query: ERROR:  multiple primary keys for table "product" are not allowed
+Command was: ALTER TABLE ONLY public.product
+    ADD CONSTRAINT product_pkey PRIMARY KEY (x);
+
+
+pg_restore: warning: errors ignored on restore: 7
+
+C:\Program Files\PostgreSQL\16\bin>createdb -U postgres test200
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>pg_restore -d test200 -U postgres D:\backup_minidatabase.custom
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>pg_restore -d test20 -c -U postgres D:\backup_minidatabase.custom
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>psql -d test200 -c -U postgres D:\backup_minidatabase.sql
+psql: warning: extra command-line argument "D:\backup_minidatabase.sql" ignored
+Password for user postgres:
+
+ERROR:  syntax error at or near "-"
+LINE 1: -U
+        ^
+
+C:\Program Files\PostgreSQL\16\bin>dropdb -U postgres test20
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>createdb -U postgres test20
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>psql -d test20 -U postgres -f D:\backup_minidatabase.sql
+Password for user postgres:
+
+SET
+SET
+SET
+SET
+SET
+ set_config
+------------
+
+(1 row)
+
+
+SET
+SET
+SET
+SET
+SET
+SET
+CREATE TABLE
+ALTER TABLE
+CREATE TABLE
+ALTER TABLE
+CREATE TABLE
+ALTER TABLE
+COPY 1
+COPY 0
+COPY 0
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+GRANT
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\backup_test20.sql -h localhost -p 5432 test20
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>pg_dump -U postgres -f D:\backup_test20.sql -h localhost -p 5432 test20
+Password:
+
+
+C:\Program Files\PostgreSQL\16\bin>psql -h localhost -p 5432
+Password for user Legion 5 Pro:
+
+psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  password authentication failed for user "Legion 5 Pro"
+
+C:\Program Files\PostgreSQL\16\bin>psql test20 postgres
+Password for user postgres:
+
+psql (16.2)
+WARNING: Console code page (437) differs from Windows code page (1252)
+         8-bit characters might not work correctly. See psql reference
+         page "Notes for Windows users" for details.
+Type "help" for help.
+
+test20=# \\
+invalid command \
+Try \? for help.
+test20=# \
+invalid command \
+Try \? for help.
+test20=# \l
+                                                                        List of databases
+     Name     |  Owner   | Encoding | Locale Provider |          Collate           |           Ctype            | ICU Locale | ICU Rules |   Access privileges
+--------------+----------+----------+-----------------+----------------------------+----------------------------+------------+-----------+-----------------------
+ minidatabase | postgres | UTF8     | libc            | English_United States.1252 | English_United States.1252 |            |           |
+ postgres     | postgres | UTF8     | libc            | English_United States.1252 | English_United States.1252 |            |           |
+ template0    | postgres | UTF8     | libc            | English_United States.1252 | English_United States.1252 |            |           | =c/postgres          +
+              |          |          |                 |                            |                            |            |           | postgres=CTc/postgres
+ template1    | postgres | UTF8     | libc            | English_United States.1252 | English_United States.1252 |            |           | =c/postgres          +
+              |          |          |                 |                            |                            |            |           | postgres=CTc/postgres
+ test20       | postgres | UTF8     | libc            | English_United States.1252 | English_United States.1252 |            |           |
+ test200      | postgres | UTF8     | libc            | English_United States.1252 | English_United States.1252 |            |           |
+(6 rows)
+
+
+test20=# \c
+You are now connected to database "test20" as user "postgres".
+test20=# \c test20
+You are now connected to database "test20" as user "postgres".
+test20=# \c minidatabase
+You are now connected to database "minidatabase" as user "postgres".
+minidatabase=# \c test20
+You are now connected to database "test20" as user "postgres".
+test20=# \dn
+      List of schemas
+  Name  |       Owner
+--------+-------------------
+ public | pg_database_owner
+(1 row)
+
+
+test20=# \du
+                             List of roles
+ Role name |                         Attributes
+-----------+------------------------------------------------------------
+ postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS
+ thanh     |
+
+
+test20=# \du user
+     List of roles
+ Role name | Attributes
+-----------+------------
+
+
+test20=# \dt
+          List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+ public | customer | table | postgres
+ public | order    | table | postgres
+ public | product  | table | postgres
+(3 rows)
+
+
+test20=# \d
+          List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+ public | customer | table | postgres
+ public | order    | table | postgres
+ public | product  | table | postgres
+(3 rows)
+
+
+test20=# \c minidatabase
+You are now connected to database "minidatabase" as user "postgres".
+minidatabase=# \dt
+          List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+ public | customer | table | postgres
+ public | order    | table | postgres
+ public | product  | table | postgres
+(3 rows)
+
+
+minidatabase=# \c test20
+You are now connected to database "test20" as user "postgres".
+test20=# \c test200
+You are now connected to database "test200" as user "postgres".
+test200=# \dt
+          List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+ public | customer | table | postgres
+ public | order    | table | postgres
+ public | product  | table | postgres
+(3 rows)
+
+
+test200=# \d
+          List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+ public | customer | table | postgres
+ public | order    | table | postgres
+ public | product  | table | postgres
+(3 rows)
+
+
+test200=# \d public."customer"
+                 Table "public.customer"
+ Column |     Type      | Collation | Nullable | Default
+--------+---------------+-----------+----------+---------
+ ID     | character(8)  |           | not null |
+ name   | character(20) |           |          |
+ date   | date          |           |          |
+Indexes:
+    "customer_pkey" PRIMARY KEY, btree ("ID")
+
+
+test200=# \d public."order"
+                    Table "public.order"
+ Column |       Type        | Collation | Nullable | Default
+--------+-------------------+-----------+----------+---------
+ a      | "char"            |           | not null |
+ b      | character varying |           |          |
+ c      | "char"            |           |          |
+Indexes:
+    "order_pkey" PRIMARY KEY, btree (a)
+
+
+test200=# \d public."product"
+              Table "public.product"
+ Column |  Type  | Collation | Nullable | Default
+--------+--------+-----------+----------+---------
+ x      | "char" |           | not null |
+ y      | "char" |           |          |
+ z      | "char" |           |          |
+Indexes:
+    "product_pkey" PRIMARY KEY, btree (x)
+
+
+test200=# \dt store.*
+Did not find any relation named "store.*".
+test200=# \dt public.*
+          List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+ public | customer | table | postgres
+ public | order    | table | postgres
+ public | product  | table | postgres
+(3 rows)
+
+
+test200=# select * from public.*
+test200-# select * from public."customer"
+test200-# select * from public."customer";
+ERROR:  syntax error at or near "select"
+LINE 2: select * from public."customer"
+        ^
+test200=# select * from public."customer";
+    ID    |         name         |    date
+----------+----------------------+------------
+ 20225764 | thanh                | 2004-07-20
+(1 row)
+
+
+test200=# select * from public."customer";
+    ID    |         name         |    date
+----------+----------------------+------------
+ 20225764 | thanh                | 2004-07-20
+(1 row)
+
+
+test200=# select
+test200-# \h insert
+Command:     INSERT
+Description: create new rows in a table
+Syntax:
+[ WITH [ RECURSIVE ] with_query [, ...] ]
+INSERT INTO table_name [ AS alias ] [ ( column_name [, ...] ) ]
+    [ OVERRIDING { SYSTEM | USER } VALUE ]
+    { DEFAULT VALUES | VALUES ( { expression | DEFAULT } [, ...] ) [, ...] | query }
+    [ ON CONFLICT [ conflict_target ] conflict_action ]
+    [ RETURNING * | output_expression [ [ AS ] output_name ] [, ...] ]
+
+where conflict_target can be one of:
+
+    ( { index_column_name | ( index_expression ) } [ COLLATE collation ] [ opclass ] [, ...] ) [ WHERE index_predicate ]
+    ON CONSTRAINT constraint_name
+
+and conflict_action is one of:
+
+    DO NOTHING
+    DO UPDATE SET { column_name = { expression | DEFAULT } |
+                    ( column_name [, ...] ) = [ ROW ] ( { expression | DEFAULT } [, ...] ) |
+                    ( column_name [, ...] ) = ( sub-SELECT )
+                  } [, ...]
+              [ WHERE condition ]
+
+URL: https://www.postgresql.org/docs/16/sql-insert.html
+
+
+test200-# select current_date
+test200-# select current_date;
+ERROR:  syntax error at or near "select"
+LINE 2: select current_date
+        ^
+test200=# select current_date;
+ current_date
+--------------
+ 2024-03-15
+(1 row)
+
+
+test200=# select current_timestamp;
+       current_timestamp
+-------------------------------
+ 2024-03-15 15:59:47.698077+07
+(1 row)
+
+
+test200=# select current_user;
+ current_user
+--------------
+ postgres
+(1 row)
+
+
+test200=# select current_database();
+ current_database
+------------------
+ test200
+(1 row)
+
+
+test200=# \i D:\test.txt
+D:: Permission denied
+test200=# \i 'D:\test.txt'
+D:      est.txt: No such file or directory
+test200=# \i 'D:\test.txt'
+D:      est.txt: No such file or directory
+test200=# \i 'D:\test.txt'
+D:      est.txt: No such file or directory
+test200=# \i 'D:\test'
+D:      est: No such file or directory
+test200=# \i 'D:\test.txt'
+D:      est.txt: No such file or directory
+test200=# \i 'D:\test.txt';
+D:      est.txt: No such file or directory
+test200=# \i 'D:\test.txt';
+D:      est.txt: No such file or directory
+test200=# \i 'D:\test.txt';
+D:      est.txt: No such file or directory
+test200=# \i 'D:\test.txt'
+D:      est.txt: No such file or directory
+test200=# \i 'D:\\test.txt'
+          List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+ public | customer | table | postgres
+ public | order    | table | postgres
+ public | product  | table | postgres
+(3 rows)
+
+
+test200=# \copy store."Customer" from data.txt delimiter ‘
+data.txt: No such file or directory
+test200=# ,
+test200-# '
+test200'#  \copy public."Customer" from data.txt delimiter','
+test200'#  \copy public."Customer" from data.txt delimiter''
+test200'#  \copy public."Customer" from data.txt delimiter'
+test200-#  \copy public."Customer" from data.txt delimiter','
+data.txt: No such file or directory
+test200-#  \copy public."Customer" from D:\\sql\\data.txt delimiter','
+ERROR:  relation "public.Customer" does not exist
+test200-#  \copy public."Customer" from 'D:\\sql\\data.txt' delimiter','
+ERROR:  relation "public.Customer" does not exist
+test200-# select * from public."customer";
+ERROR:  syntax error at or near ","
+LINE 1: ,
+        ^
+test200=# select * from public."customer";
+    ID    |         name         |    date
+----------+----------------------+------------
+ 20225764 | thanh                | 2004-07-20
+(1 row)
+
+
+test200=#  \copy public."customer" from 'D:\\sql\\data.txt' delimiter','
+ERROR:  invalid input syntax for type date: "dfnjgdh"
+CONTEXT:  COPY customer, line 1, column date: "dfnjgdh"
+test200=#  \copy public."customer" from 'D:\\sql\\data.txt' delimiter','
+ERROR:  missing data for column "name"
+CONTEXT:  COPY customer, line 4: ""
+test200=#  \copy public."customer" from 'D:\\sql\\data.txt' delimiter','
+ERROR:  duplicate key value violates unique constraint "customer_pkey"
+DETAIL:  Key ("ID")=(20225764) already exists.
+CONTEXT:  COPY customer, line 1
+test200=#  \copy public."customer" from 'D:\\sql\\data.txt' delimiter','
+COPY 3
+test200=# select * from public."customer";
+    ID    |         name         |    date
+----------+----------------------+------------
+ 20225764 | thanh                | 2004-07-20
+ 20229964 | thanh                | 2004-07-20
+ 24347439 | le                   | 2004-07-20
+ 23458676 | minh                 | 2004-07-20
+(4 rows)
+
+
+test200=#
