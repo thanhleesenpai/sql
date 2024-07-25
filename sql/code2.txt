@@ -1,19 +1,19 @@
 --truy cap db edudb_v2 voi id postgres
 psql edudb_v2 postgres
---List of subjects having 5 or more credits
+-- 1 List of subjects having 5 or more credits
 SELECT credit FROM subject WHERE credit >= 3;
---
+--2
 SELECT student_id, first_name
 FROM student
 WHERE clazz_id IN (SELECT clazz_id FROM clazz WHERE name = 'CNTT1.01-K61');
---List of students in classes whose name contains "CNTT"
+-- 3 List of students in classes whose name contains "CNTT"
 select * from student,clazz where student.clazz_id=clazz.clazz_id and upper(clazz.name) like '%CNTT%';
---
+--5
 select * from student, subject, enrollment
 where subject.subject_id = enrollment.subject_id
 and student.student_id = enrollment.student_id
 and (subject.name = 'Cơ sở dữ liệu' or subject.name = 'Tin học đại cương');
---
+-- 4
 (select student.student_id,student.first_name,student.last_name from student, subject, enrollment
 where subject.subject_id = enrollment.subject_id
 and student.student_id = enrollment.student_id
@@ -25,19 +25,19 @@ and subject.name = 'Cơ sở dữ liệu')
 where subject.subject_id = enrollment.subject_id
 and student.student_id = enrollment.student_id
 and subject.name = 'Tin học đại cương');
---
+--6
 select subject_id as id, name from subject
 where not exists (
 	select * from enrollment where subject.subject_id = enrollment.subject_id
 )
---
+--7
 select subject.name, subject.credit from subject,enrollment, student
 where subject.subject_id=enrollment.subject_id
 and enrollment.student_id=student.student_id
 and lower(enrollment.semester)='20171'
 and lower(student.first_name)='ngọc an'
 and lower(student.last_name)='bùi'
---
+--8
 select student.student_id, student.first_name, midterm_score, final_score,
 (midterm_score * (1- percentage_final_exam*1.0/100) + final_score
 *percentage_final_exam/100) as subject_score
@@ -46,7 +46,7 @@ where student.student_id=enrollment.student_id
 and enrollment.subject_id=subject.subject_id
 and enrollment.semester='20172'
 and subject.name='Cơ sở dữ liệu'
---
+--9
 select * from
 (select student.student_id, student.first_name, midterm_score, final_score,
 (midterm_score * (1- percentage_final_exam*1.0/100) + final_score
@@ -66,9 +66,9 @@ join student t on c.monitor_id=t.student_id
 SELECT student_id, concat(first_name, ' ', last_name),age(dob), date_part('year', current_date) - date_part('year', dob) as age_student
 FROM student
 WHERE date_part('year', age(dob)) >=25;
---
+--11
 select first_name, age(dob) from student
-where extract(month from age(dob))>=25
+where extract(year from age(dob))>=25
 --12
 --cach1
 SELECT student_id, concat(first_name, ' ', last_name)
@@ -79,13 +79,13 @@ WHERE date_part('year', dob) = 1999
 SELECT student_id, concat(first_name, ' ', last_name),dob
 FROM student
 WHERE dob BETWEEN '1987-06-01' AND '1987-06-30';
---
+--12
 select * from student
 where extract(month from dob)=1
 and extract(year from dob)=1988
 --13
 SELECT c.*, count(student_id) as ssv
-FROM student s join clazz c using(clazz_id)
+FROM student s  right join clazz c using(clazz_id)
 GROUP BY c.clazz_id
 ORDER BY ssv desc;
 --

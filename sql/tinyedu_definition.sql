@@ -32,7 +32,7 @@ CREATE TABLE clazz(
 
 ALTER TABLE student ADD 
 	CONSTRAINT fk1_student2class FOREIGN KEY(clazz_id)
-	REFERENCES clazz(clazz_id);
+	REFERENCES clazz(clazz_id);   --(ON DELETE SET NULL, ON UPDATE CASDADE)
 
 
 CREATE TABLE lecturer(

@@ -1,0 +1,41 @@
+--1
+select * from "Customer"
+where lower("Company")='microsoft corporation'
+--2
+select * from "Customer"
+join "Invoice" on "Invoice"."CustomerId"="Customer"."CustomerId"
+where date_part('year',"Invoice"."InvoiceDate")='2012'
+--3
+select * from "Track","Invoice","InvoiceLine"
+where "Invoice"."InvoiceId"="InvoiceLine"."InvoiceId"
+and "Track"."TrackId"="InvoiceLine"."TrackId"
+and date_part('year',"Invoice"."InvoiceDate")='2012'
+--4
+select * from "Invoice","InvoiceLine","Track"
+where "Invoice"."InvoiceId"="InvoiceLine"."InvoiceId"
+and "Track"."TrackId"="InvoiceLine"."TrackId"
+and "Track"."Name"='Dazed and Confused'
+--5
+select * from "Invoice"
+left join "InvoiceLine" on "Invoice"."InvoiceId"="InvoiceLine"."InvoiceId"
+left join "Track" on "Track"."TrackId"="InvoiceLine"."TrackId"
+where "Track"."AlbumId"=(SELECT "AlbumId" FROM "Album"
+						 where "Album"."Title"='Presence')
+--6
+select * from "Invoice"
+order by "Total" ESC
+--7
+select avg("Total"), min("Total"), max("Total")
+from "Invoice"
+--8 
+select "Album"."Title",count("TrackId")
+from "Album","Track"
+where "Album"."AlbumId"="Track"."AlbumId"
+group by "Album"."Title"
+--9
+SELECT "Customer"."FirstName","Customer"."LastName",count("Invoice"."InvoiceId")
+FROM "Customer","Invoice"
+where "Customer"."CustomerId"="Invoice"."CustomerId"
+group by "Customer"."CustomerId"
+having count("Invoice"."InvoiceId")>=3
+

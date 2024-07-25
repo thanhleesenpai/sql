@@ -1,0 +1,88 @@
+CREATE OR REPLACE FUNCTION get_customers_by_company(company_name VARCHAR)
+RETURNS TABLE (
+    "FirstName" VARCHAR(40),
+    "LastName" VARCHAR(20)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        "Customer"."FirstName",
+        "Customer"."LastName"
+    FROM "Customer"
+    WHERE "Customer"."Company" = company_name;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION get_song_count_by_genre(genre_id INT)
+RETURNS INT AS $$
+DECLARE
+    song_count INT;
+BEGIN
+    SELECT COUNT(*) INTO song_count
+    FROM "Genre"
+    WHERE "Genre"."GenreId" = genre_id;
+    
+    RETURN song_count;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION get_top_n_tracks_by_revenue(n INT)
+RETURNS TABLE(
+    "TrackId" INT,
+    "Name" VARCHAR(200),
+    "Revenue" NUMERIC(10,2)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        "Track"."TrackId", 
+        "Track"."Name", 
+        ("Track"."UnitPrice" * ("Track"."Bytes" / "Track"."Milliseconds")) AS "Revenue"
+    FROM 
+        "Track"
+    ORDER BY 
+        "Revenue" DESC
+    LIMIT 
+        n;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+ALTER TABLE "Invoice"
+ADD COLUMN "Tax" NUMERIC(10,2);
+UPDATE "Invoice"
+SET "Tax" = "Total" * 0.1; -- 10% tax rate
+CREATE OR REPLACE FUNCTION update_invoice_tax()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+        NEW."Tax" := NEW."Total" * 0.1; -- 10% tax rate
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_invoice_tax
+BEFORE INSERT OR UPDATE ON "Invoice"
+FOR EACH ROW EXECUTE FUNCTION update_invoice_tax();
+
+
+
+CREATE OR REPLACE FUNCTION check_milliseconds()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW."Milliseconds" < 0 THEN
+        RAISE EXCEPTION 'Milliseconds cannot be negative';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_check_milliseconds
+BEFORE INSERT OR UPDATE ON "Track"
+FOR EACH ROW EXECUTE FUNCTION check_milliseconds();
